@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: ./Dockerfile
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - POSTGRES_URL=jdbc:postgresql://user-database:5432/user-service
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "8090:8090"
+    depends_on:
+      - user-database
+
+  user-database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user-service
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./local-docker-file/postgres/data:/var/lib/postgresql/data
+      - ./local-docker-file/postgres/init/user:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.ca
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "8889:80"
+    depends_on:
+      - user-database
