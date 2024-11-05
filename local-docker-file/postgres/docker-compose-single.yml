@@ -7,7 +7,7 @@ services:
     image: postgres
     ports:
       - "5432:5432"
-    container_name: postgres-single
+    container_name: postgres-user
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password
@@ -19,7 +19,7 @@ services:
     image: dpage/pgadmin4
     ports:
       - "8889:80"
-    container_name: pgadmin-single
+    container_name: pgadmin-user
     environment:
       - PGADMIN_DEFAULT_EMAIL=user@domain.ca
       - PGADMIN_DEFAULT_PASSWORD=password

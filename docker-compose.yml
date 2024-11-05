@@ -25,7 +25,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: room-service
     ports:
-      - "5433:5432"  # Adjusted port for RoomService database
+      - "5433:5432"
     volumes:
       - room_db_data:/var/lib/postgresql/data
       - ./local-docker-file/postgres/room-service/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -47,10 +47,10 @@ services:
   # UserService
   user-service:
     build:
-      context: ./user-service  # Adjust path to UserService Dockerfile
+      context: ./user-service
       dockerfile: Dockerfile
     ports:
-      - "8090:8090"  # UserService exposed port
+      - "8090:8090"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -61,10 +61,10 @@ services:
   # RoomService
   room-service:
     build:
-      context: ./room-service  # Adjust path to RoomService Dockerfile
+      context: ./room-service
       dockerfile: Dockerfile
     ports:
-      - "8091:8091"  # RoomService exposed port
+      - "8091:8091"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
