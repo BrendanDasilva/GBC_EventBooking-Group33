@@ -1,22 +1,9 @@
 version: '3.8'
-
 services:
-  user-service:
-    build:
-      context: ./user-service
-      dockerfile: ./Dockerfile
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - POSTGRES_URL=jdbc:postgresql://user-database:5432/user-service
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=password
-    ports:
-      - "8090:8090"
-    depends_on:
-      - user-database
-
-  user-database:
+  # PostgreSQL for UserService
+  user-db:
     image: postgres:latest
+    container_name: user_db
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
@@ -24,15 +11,70 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./local-docker-file/postgres/data:/var/lib/postgresql/data
-      - ./local-docker-file/postgres/init/user:/docker-entrypoint-initdb.d
+      - user_db_data:/var/lib/postgresql/data
+      - ./local-docker-file/postgres/user-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app_network
 
+  # PostgreSQL for RoomService
+  room-db:
+    image: postgres:latest
+    container_name: room_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: room-service
+    ports:
+      - "5433:5432"  # Adjusted port for RoomService database
+    volumes:
+      - room_db_data:/var/lib/postgresql/data
+      - ./local-docker-file/postgres/room-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app_network
+
+  # pgAdmin
   pgadmin:
     image: dpage/pgadmin4
+    container_name: pgadmin_app
     environment:
       PGADMIN_DEFAULT_EMAIL: user@domain.ca
       PGADMIN_DEFAULT_PASSWORD: password
     ports:
       - "8889:80"
+    networks:
+      - app_network
+
+  # UserService
+  user-service:
+    build:
+      context: ./user-service  # Adjust path to UserService Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"  # UserService exposed port
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
     depends_on:
-      - user-database
+      - user-db
+    networks:
+      - app_network
+
+  # RoomService
+  room-service:
+    build:
+      context: ./room-service  # Adjust path to RoomService Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "8091:8091"  # RoomService exposed port
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - room-db
+    networks:
+      - app_network
+
+volumes:
+  user_db_data:
+  room_db_data:
+
+networks:
+  app_network:
