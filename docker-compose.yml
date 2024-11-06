@@ -27,7 +27,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - room_db_data:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
       - ./local-docker-file/postgres/room-service/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app_network

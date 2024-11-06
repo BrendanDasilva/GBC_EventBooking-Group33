@@ -3,7 +3,8 @@ package ca.gbc.userservice.service;
 import ca.gbc.userservice.model.UserServiceModel;
 import ca.gbc.userservice.dto.UserServiceRequest;
 import ca.gbc.userservice.repository.UserServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,14 +12,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserServiceRepository userServiceRepository;
-
-  @Autowired
-  public UserServiceImpl(UserServiceRepository userServiceRepository) {
-    this.userServiceRepository = userServiceRepository;
-  }
 
   @Override
   public UserServiceModel createUser(UserServiceRequest request) {

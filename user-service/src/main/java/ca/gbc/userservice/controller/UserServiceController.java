@@ -3,6 +3,7 @@ package ca.gbc.userservice.controller;
 import ca.gbc.userservice.dto.UserServiceRequest;
 import ca.gbc.userservice.model.UserServiceModel;
 import ca.gbc.userservice.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +14,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserServiceController {
 
   private final UserService userService;
-
-  @Autowired
-  public UserServiceController(UserService userService) {
-    this.userService = userService;
-  }
 
   @PostMapping
   public ResponseEntity<UserServiceModel> createUser(@RequestBody UserServiceRequest request) {
