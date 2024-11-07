@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  # PostgreSQL for UserService
+  # PostgresSQL for UserService
   user-db:
     image: postgres:latest
     container_name: user_db
@@ -28,9 +28,53 @@ services:
       - "5433:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-      - ./local-docker-file/postgres/room-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./local-docker-file/postgres/room/00-init.sql:/docker-entrypoint-initdb.d/00-init.sql
     networks:
       - app_network
+
+  # MongoDB for EventService
+  event-db:
+    image: mongo:latest
+    container_name: event_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "27018:27017"
+    networks:
+      - app_network
+
+
+  #MongoDB for ApprovalService
+  approval-db:
+    image: mongo:latest
+    container_name: approval_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "27019:27017"
+    networks:
+      - app_network
+
+  # MongoDB for BookingService
+  booking-db:
+    image: mongo:latest
+    container_name: booking_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "21017:21027"
+    networks:
+      - app_network
+
 
   # pgAdmin
   pgadmin:
@@ -64,7 +108,7 @@ services:
       context: ./room-service
       dockerfile: Dockerfile
     ports:
-      - "8091:8091"
+      - "8095:8095"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -72,9 +116,55 @@ services:
     networks:
       - app_network
 
+  # EventService
+  event-service:
+    build:
+      context: ./event-service
+      dockerfile: Dockerfile
+    ports:
+      - "8092:8092"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - event-db
+    networks:
+      - app_network
+
+  # BookingService
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    ports:
+      - "8093:8093"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - booking-db
+    networks:
+      - app_network
+
+  # ApprovalService
+  approval-service:
+    build:
+      context: ./approval-service
+      dockerfile: Dockerfile
+    ports:
+      - "8094:8094"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - approval-db
+    networks:
+      - app_network
+
 volumes:
   user_db_data:
   room_db_data:
+  event_db_data:
+  booking_db_data:
+  approval_db_data:
 
 networks:
   app_network:
+    driver: bridge
