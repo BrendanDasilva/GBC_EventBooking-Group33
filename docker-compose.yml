@@ -1,0 +1,170 @@
+version: '3.8'
+services:
+  # PostgresSQL for UserService
+  user-db:
+    image: postgres:latest
+    container_name: user_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user-service
+    ports:
+      - "5432:5432"
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+      - ./local-docker-file/postgres/user-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app_network
+
+  # PostgreSQL for RoomService
+  room-db:
+    image: postgres:latest
+    container_name: room_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: room-service
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./local-docker-file/postgres/room/00-init.sql:/docker-entrypoint-initdb.d/00-init.sql
+    networks:
+      - app_network
+
+  # MongoDB for EventService
+  event-db:
+    image: mongo:latest
+    container_name: event_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "27018:27017"
+    networks:
+      - app_network
+
+
+  #MongoDB for ApprovalService
+  approval-db:
+    image: mongo:latest
+    container_name: approval_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "27019:27017"
+    networks:
+      - app_network
+
+  # MongoDB for BookingService
+  booking-db:
+    image: mongo:latest
+    container_name: booking_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "21017:21027"
+    networks:
+      - app_network
+
+
+  # pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_app
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.ca
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "8889:80"
+    networks:
+      - app_network
+
+  # UserService
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - user-db
+    networks:
+      - app_network
+
+  # RoomService
+  room-service:
+    build:
+      context: ./room-service
+      dockerfile: Dockerfile
+    ports:
+      - "8095:8095"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - room-db
+    networks:
+      - app_network
+
+  # EventService
+  event-service:
+    build:
+      context: ./event-service
+      dockerfile: Dockerfile
+    ports:
+      - "8092:8092"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - event-db
+    networks:
+      - app_network
+
+  # BookingService
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    ports:
+      - "8093:8093"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - booking-db
+    networks:
+      - app_network
+
+  # ApprovalService
+  approval-service:
+    build:
+      context: ./approval-service
+      dockerfile: Dockerfile
+    ports:
+      - "8094:8094"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - approval-db
+    networks:
+      - app_network
+
+volumes:
+  user_db_data:
+  room_db_data:
+  event_db_data:
+  booking_db_data:
+  approval_db_data:
+
+networks:
+  app_network:
+    driver: bridge

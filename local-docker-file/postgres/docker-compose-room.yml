@@ -1,0 +1,46 @@
+# docker-compose -f docker-compose-room.yml up -d --build
+
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-room
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=room-service
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./local-docker-file/postgres/room-service/00-init.sql:/docker-entrypoint-initdb.d/00-init.sql
+      - ./db.migration/V1__init.sql:/docker-entrypoint-initdb.d/01-V1__init.sql
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-single
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.ca
+      - PGADMIN_DEFAULT_PASSWORD=password
+    ports:
+      - "8889:80"
+
+
+#  room-service:
+#    build:
+#      context: ./room-service
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8091:8091"
+#    environment:
+#      SPRING_PROFILES_ACTIVE=docker
+#    depends_on:
+#      - postgres
+#    networks:
+#      - room_service_network
+
+volumes:
+  room_db_data:
+
+networks:
+  room_service_network:
