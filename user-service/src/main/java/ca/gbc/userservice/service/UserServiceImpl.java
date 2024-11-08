@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,5 +56,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public void deleteUser(UUID id) {
     userServiceRepository.deleteById(id);
+  }
+
+  @Override
+  public boolean getRoleById(UUID id) {
+    return userServiceRepository.findById(id)
+            .map(user -> user.getRole() == UserServiceModel.Role.STAFF)
+            .orElse(false);
   }
 }

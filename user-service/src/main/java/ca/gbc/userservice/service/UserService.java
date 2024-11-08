@@ -13,4 +13,5 @@ public interface UserService {
   List<UserServiceModel> getAllUsers();
   UserServiceModel updateUser(UUID id, UserServiceRequest request);
   void deleteUser(UUID id);
+  boolean getRoleById(UUID id);
 }
