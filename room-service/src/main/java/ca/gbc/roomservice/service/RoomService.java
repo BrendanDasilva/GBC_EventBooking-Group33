@@ -11,4 +11,5 @@ public interface RoomService {
   List<RoomServiceModel> getAllRooms();
   RoomServiceModel getRoomById(Long id);
   boolean checkRoomAvailability(String roomName);
+  void deleteRoom(Long id);
 }

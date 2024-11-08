@@ -58,4 +58,9 @@ public class RoomServiceImpl implements RoomService {
         .map(RoomServiceModel::isAvailability)
         .orElse(false);
   }
+
+  @Override
+  public void deleteRoom(Long id) {
+
+  }
 }

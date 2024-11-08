@@ -45,4 +45,10 @@ public class RoomServiceController {
     boolean isAvailable = roomService.checkRoomAvailability(roomName);
     return ResponseEntity.ok(isAvailable);
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+    roomService.deleteRoom(id);
+    return ResponseEntity.noContent().build();
+  }
 }
