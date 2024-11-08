@@ -40,14 +40,14 @@ public class EventServiceController {
 		return eventService.getAllEvents().stream().map(this::mapToResponse).toList();
 	}
 
-	/*---------- GET BY ID ----------*/
+	/*------------ GET BY ID --------------*/
 	@GetMapping("/{id}")
 	public ResponseEntity<EventServiceResponse> getEventById(@PathVariable String id){
 		log.info("Getting event {}", id);
 
 		EventServiceModel event = eventService.getEventById(id);
 		return event != null ? ResponseEntity.ok(mapToResponse(event)) : ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
+				.status(HttpStatus.NOT_FOUND) // 404
 				.build();
 	}
 
