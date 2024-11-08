@@ -5,6 +5,7 @@ import ca.gbc.userservice.model.UserServiceModel;
 import ca.gbc.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +48,9 @@ public class UserServiceController {
     return ResponseEntity.noContent().build();
   }
 
-
+  @GetMapping("/{id}/role")
+  @ResponseStatus(HttpStatus.OK)
+  public boolean getUserRoleByID(@PathVariable UUID id) {
+    return userService.getRoleById(id);
+  }
 }
