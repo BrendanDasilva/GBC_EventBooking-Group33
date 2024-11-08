@@ -3,7 +3,7 @@ services:
   # PostgresSQL for UserService
   user-db:
     image: postgres:latest
-    container_name: user_db
+    container_name: use
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
