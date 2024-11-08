@@ -25,8 +25,10 @@ public class EventServiceApplicationTests {
 
 	}
 
+	/*---------- CREATE TEST ----------*/
 	@Test
 	public void createEventTest(){
+
 		EventServiceRequest request = new EventServiceRequest(
 				"Event Name",
 				"123",
@@ -35,6 +37,7 @@ public class EventServiceApplicationTests {
 		);
 
 		RestAssured.given()
+
 				.contentType(ContentType.JSON)
 				.body(request)
 				.when()
@@ -44,34 +47,41 @@ public class EventServiceApplicationTests {
 				.body("eventName", equalTo("Event Name"))
 				.body("organizerId", equalTo("123"))
 				.body("eventType", equalTo("Social"))
-				.body("expectedAttendees", equalTo(200));
+				.body("expectedAttendees", equalTo(200)); // OK
 	}
 
+	/*---------- GET ALL TEST ----------*/
 	@Test
 	public void getAllEventsTest(){
 
 		RestAssured.given()
+
+				.contentType(ContentType.JSON)
 				.when()
 				.get("/api/events")
 				.then()
-				.statusCode(200)
+				.statusCode(200) // OK
 				.body("events.size()", equalTo(0));
 	}
 
+	/*---------- GET BY ID TEST ----------*/
 	@Test
 	public void getEventByIdTest(){
 
 		String eventId = "123";
 
 		RestAssured.given()
+
+				.contentType(ContentType.JSON)
 				.pathParam("id", eventId)
 				.when()
 				.get("/api/events/{id}")
 				.then()
-				.statusCode(200)
+				.statusCode(200) // OK
 				.body("id", equalTo(eventId));
 
 	}
+
 
 	@Test
 	public void getEventByIdNotFoundTest(){
@@ -79,6 +89,8 @@ public class EventServiceApplicationTests {
 		String invalidEventId = "--- Invalid Event Id ";
 
 		RestAssured.given()
+
+				.contentType(ContentType.JSON)
 				.pathParam("id", invalidEventId)
 				.when()
 				.get("/api/events/{id}")
@@ -86,18 +98,24 @@ public class EventServiceApplicationTests {
 				.statusCode(404); // NOT FOUND
 	}
 
+
+	/*---------- UPDATE TEST ----------*/
 	@Test
 	public void updateEventTest(){
 
 		String eventId = "123";
 
 		EventServiceRequest request = new EventServiceRequest(
+
 				"Updated eventName",
 				"1234",
 				"Luncheon",
 				200
+
 		);
+
 		RestAssured.given()
+
 				.contentType(ContentType.JSON)
 				.body(request)
 				.pathParam("id", eventId)
@@ -110,17 +128,24 @@ public class EventServiceApplicationTests {
 
 	}
 
+	/*---------- DELETE TEST ----------*/
 	@Test
 	public void deleteEventTest(){
 
 		String eventId = "123";
+
 		RestAssured.given()
+
+				.contentType(ContentType.JSON)
 				.pathParam("id", eventId)
 				.when()
 				.delete("/api/events/{id}")
 				.then()
 				.statusCode(204); // NO CONTENT
+
 		RestAssured.given()
+
+				.contentType(ContentType.JSON)
 				.pathParam("id", eventId)
 				.when()
 				.get("/api/events/{id}")
