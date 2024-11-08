@@ -5,10 +5,8 @@ import ca.gbc.approvalservice.model.Approval;
 import java.util.UUID;
 
 public record ApprovalResponse(
-        UUID eventId,
-        UUID approverId,
-
-        Approval.Status status,
-        String comments
+        String eventId,
+        String eventType,
+        Approval.Status status
 ) {
 }

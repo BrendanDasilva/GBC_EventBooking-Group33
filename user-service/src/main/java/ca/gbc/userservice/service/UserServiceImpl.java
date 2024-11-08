@@ -61,7 +61,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean getRoleById(UUID id) {
     return userServiceRepository.findById(id)
-            .map(user -> user.getRole() == UserServiceModel.Role.STAFF)
+            .map(user ->
+                    user.getRole() == UserServiceModel.Role.STAFF || user.getRole() == UserServiceModel.Role.FACULTY)
             .orElse(false);
   }
 }
