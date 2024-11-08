@@ -19,7 +19,9 @@ public class Approval {
     @Id
     private String id;
 
-    private UUID eventId;
+    private String eventId;
+    private String eventType;
+
     private UUID approverId;
 
     private Status status;

@@ -75,5 +75,12 @@ public class EventServiceImpl implements EventService {
 		eventServiceRepository.deleteById(id);
 	}
 
+	@Override
+	public String getEventType(String id) {
+		return eventServiceRepository.findById(id)
+				.map(EventServiceModel::getEventType)
+				.orElseThrow(() -> new RuntimeException("Event not found"));
+	}
+
 
 }

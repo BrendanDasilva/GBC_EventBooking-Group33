@@ -6,10 +6,8 @@ import java.util.UUID;
 
 public record ApprovalRequest(
         String id,
-
-        UUID eventId,
+        String eventId,
         UUID approverId,
-
         Approval.Status status,
         String comments
 ) {

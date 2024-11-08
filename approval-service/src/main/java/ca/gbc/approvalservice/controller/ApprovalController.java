@@ -1,4 +1,4 @@
 package ca.gbc.approvalservice.controller;
 
-public class ApprovalServiceColtroller {
+public class ApprovalController {
 }

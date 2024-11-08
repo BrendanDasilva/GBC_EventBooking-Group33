@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -73,6 +74,12 @@ public class EventServiceController {
 		log.info("Deleting event {}", id);
 		eventService.deleteEvent(id);
 
+	}
+
+	@GetMapping("/{id}/type")
+	@ResponseStatus(HttpStatus.OK)
+	public String getEventType(@PathVariable String id) {
+		return eventService.getEventType(id);
 	}
 
 	/*---------- HELPER METHODS ----------*/
