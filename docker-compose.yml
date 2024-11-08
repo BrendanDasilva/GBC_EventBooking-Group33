@@ -71,7 +71,7 @@ services:
     volumes:
       - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
-      - "21017:21027"
+      - "27017:27017"
     networks:
       - app_network
 
@@ -88,19 +88,7 @@ services:
     networks:
       - app_network
 
-  # UserService
-  user-service:
-    build:
-      context: ./user-service
-      dockerfile: Dockerfile
-    ports:
-      - "8090:8090"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - user-db
-    networks:
-      - app_network
+
 
   # RoomService
   room-service:
@@ -116,19 +104,7 @@ services:
     networks:
       - app_network
 
-  # EventService
-  event-service:
-    build:
-      context: ./event-service
-      dockerfile: Dockerfile
-    ports:
-      - "8092:8092"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - event-db
-    networks:
-      - app_network
+
 
   # BookingService
   booking-service:
