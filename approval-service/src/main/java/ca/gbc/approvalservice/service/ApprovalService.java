@@ -14,5 +14,5 @@ public interface ApprovalService {
 
     ApprovalResponse updateApproval(String approvalId, ApprovalRequest approvalRequest);
 
-    String deleteApproval(String approvalId);
+    ApprovalResponse deleteApproval(String approverId, String approvalId);
 }
