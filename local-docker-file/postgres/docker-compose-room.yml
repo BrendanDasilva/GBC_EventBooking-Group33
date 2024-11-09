@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  room-db:
+    image: postgres:latest
+    container_name: room-db
+    environment:
+      POSTGRES_DB: room-service
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - room_db_data:/var/lib/postgresql/data
+      - ./db.migration:/docker-entrypoint-initdb.d
+    networks:
+      - app_network
+
+  room-service:
+    build:
+      context: ../../room-service
+      dockerfile: Dockerfile
+    container_name: room-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://room-db:5432/room-service
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "8091:8091"
+    depends_on:
+      - room-db
+    networks:
+      - app_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.ca
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "8889:80"
+    networks:
+      - app_network
+
+volumes:
+  room_db_data:
+
+networks:
+  app_network:
+    driver: bridge
