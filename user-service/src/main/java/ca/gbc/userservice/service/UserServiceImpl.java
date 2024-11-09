@@ -17,52 +17,52 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-  private final UserServiceRepository userServiceRepository;
+    private final UserServiceRepository userServiceRepository;
 
-  @Override
-  public UserServiceModel createUser(UserServiceRequest request) {
-    UserServiceModel user = UserServiceModel.builder()
-        .name(request.name())
-        .email(request.email())
-        .role(request.role())
-        .userType(request.userType())
-        .build();
-    return userServiceRepository.save(user);
-  }
+    @Override
+    public UserServiceModel createUser(UserServiceRequest request) {
+        UserServiceModel user = UserServiceModel.builder()
+            .name(request.name())
+            .email(request.email())
+            .role(request.role())
+            .userType(request.userType())
+            .build();
+        return userServiceRepository.save(user);
+    }
 
-  @Override
-  public Optional<UserServiceModel> getUserById(UUID id) {
-    return userServiceRepository.findById(id);
-  }
+    @Override
+    public Optional<UserServiceModel> getUserById(UUID id) {
+        return userServiceRepository.findById(id);
+    }
 
-  @Override
-  public List<UserServiceModel> getAllUsers() {
-    return userServiceRepository.findAll();
-  }
+    @Override
+    public List<UserServiceModel> getAllUsers() {
+        return userServiceRepository.findAll();
+    }
 
-  @Override
-  public UserServiceModel updateUser(UUID id, UserServiceRequest request) {
-    return userServiceRepository.findById(id)
-        .map(user -> {
-          user.setName(request.name());
-          user.setEmail(request.email());
-          user.setRole(request.role());
-          user.setUserType(request.userType());
-          return userServiceRepository.save(user);
-        })
-        .orElseThrow(() -> new RuntimeException("User not found"));
-  }
+    @Override
+    public UserServiceModel updateUser(UUID id, UserServiceRequest request) {
+        return userServiceRepository.findById(id)
+            .map(user -> {
+                user.setName(request.name());
+                user.setEmail(request.email());
+                user.setRole(request.role());
+                user.setUserType(request.userType());
+                return userServiceRepository.save(user);
+            })
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
-  @Override
-  public void deleteUser(UUID id) {
-    userServiceRepository.deleteById(id);
-  }
+    @Override
+    public void deleteUser(UUID id) {
+        userServiceRepository.deleteById(id);
+    }
 
-  @Override
-  public boolean getRoleById(UUID id) {
-    return userServiceRepository.findById(id)
+    @Override
+    public boolean getRoleById(UUID id) {
+        return userServiceRepository.findById(id)
             .map(user ->
-                    user.getRole() == UserServiceModel.Role.STAFF || user.getRole() == UserServiceModel.Role.FACULTY)
+                user.getRole() == UserServiceModel.Role.STAFF || user.getRole() == UserServiceModel.Role.FACULTY)
             .orElse(false);
-  }
+    }
 }
