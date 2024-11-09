@@ -14,7 +14,6 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-
 public class EventServiceImpl implements EventService {
 
 	private final EventServiceRepository eventRepository;
@@ -67,11 +66,25 @@ public class EventServiceImpl implements EventService {
 		eventRepository.deleteById(id);
 	}
 
+	/*----- GET EVENT TYPE  -----*/
 	@Override
 	public String getEventType(String id) {
-		return eventServiceRepository.findById(id)
-				.map(EventServiceModel::getEventType)
-				.orElseThrow(() -> new RuntimeException("Event not found"));
+		EventServiceModel event = eventRepository.findById(id)
+				.orElseThrow(()-> new RuntimeException("Event with id " + id + " not found"));
+		return event.getEventType();
+	}
+
+	/*----- SAVE EVENT  -----*/
+	@Override
+	public EventServiceModel savedEvent(EventServiceRequest eventRequest) {
+		EventServiceModel eventServiceModel = new EventServiceModel(
+				null,
+				eventRequest.eventName(),
+				eventRequest.organizerId(),
+				eventRequest.eventType(),
+				eventRequest.expectedAttendees()
+		);
+		return eventRepository.save(eventServiceModel);
 	}
 
 

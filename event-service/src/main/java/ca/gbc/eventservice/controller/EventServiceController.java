@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -29,7 +27,7 @@ public class EventServiceController {
 		log.info("Creating event {}", eventRequest.eventName());
 
 		EventServiceModel event = mapToModel(eventRequest);
-		EventServiceModel savedEvent = eventService.saveEvent(event);
+		EventServiceModel savedEvent = eventService.savedEvent(eventRequest);
 		return new ResponseEntity<>(mapToResponse(savedEvent), HttpStatus.CREATED);
 	}
 
@@ -61,7 +59,7 @@ public class EventServiceController {
 		EventServiceModel event = mapToModel(eventRequest);
 		event.setId(id);
 
-		EventServiceModel updatedEvent = eventService.updateEvent(event);
+		EventServiceModel updatedEvent = eventService.updateEvent(eventRequest, id);
 		return ResponseEntity.ok(mapToResponse(updatedEvent)).getBody();
 
 	}
