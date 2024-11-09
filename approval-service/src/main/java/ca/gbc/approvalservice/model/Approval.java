@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.UUID;
 
 @Document(value="approval")
 @Data
@@ -19,8 +18,10 @@ public class Approval {
     @Id
     private String id;
 
-    private UUID eventId;
-    private UUID approverId;
+    private String eventId;
+    private String eventType;
+
+    private String approverId;
 
     private Status status;
     private String comments;

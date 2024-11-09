@@ -13,4 +13,6 @@ public interface ApprovalService {
     List<ApprovalResponse> getAllApprovals();
 
     ApprovalResponse updateApproval(String approvalId, ApprovalRequest approvalRequest);
+
+    ApprovalResponse deleteApproval(String approverId, String approvalId);
 }

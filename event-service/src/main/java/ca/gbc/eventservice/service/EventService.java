@@ -17,6 +17,7 @@ public interface EventService {
 	EventServiceModel updateEvent(EventServiceRequest eventRequest, String id);
 
 	void deleteEvent(String id);
+	String getEventType(String id);
 
 
 }

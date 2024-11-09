@@ -4,17 +4,15 @@ import ca.gbc.eventservice.model.EventServiceModel;
 import ca.gbc.eventservice.dto.EventServiceRequest;
 import ca.gbc.eventservice.dto.EventServiceResponse;
 import ca.gbc.eventservice.service.EventService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
-import java.util.NoSuchElementException;
-
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -24,65 +22,87 @@ public class EventServiceController {
 
 	private final EventService eventService;
 
-	/*------- CREATE NEW EVENT -------*/
+	/*---------- CREATE NEW EVENT ----------*/
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED) // 201
-	public ResponseEntity<EventServiceResponse> createEvent(@RequestBody EventServiceRequest eventRequest) {
-		log.info("CREATING EVENT {}", eventRequest.eventName());
+	public ResponseEntity<EventServiceResponse> createEvent(@RequestBody EventServiceRequest eventRequest){
+		log.info("Creating event {}", eventRequest.eventName());
 
-			EventServiceModel savedEvent = eventService.createEvent(eventRequest);
-			EventServiceResponse response = mapToResponse(savedEvent);
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
-
+		EventServiceModel event = mapToModel(eventRequest);
+		EventServiceModel savedEvent = eventService.saveEvent(event);
+		return new ResponseEntity<>(mapToResponse(savedEvent), HttpStatus.CREATED);
 	}
 
-	/*------- GET ALL EVENTS -------*/
+	/*---------- GET ALL EVENTS ----------*/
 	@GetMapping
-	public List<EventServiceResponse> getAllEvents() {
-		log.info("GETTING ALL EVENTS");
-		return eventService.getAllEvents()
-				.stream()
-				.map(this::mapToResponse)
-				.toList();
+	public List<EventServiceResponse> getAllEvents(){
+		log.info("Getting all events");
+
+		return eventService.getAllEvents().stream().map(this::mapToResponse).toList();
 	}
 
-	/*------- GET EVENT BY ID -------*/
+	/*------------ GET BY ID --------------*/
 	@GetMapping("/{id}")
-	public ResponseEntity<EventServiceResponse> getEventById(@PathVariable String id) {
-		log.info("GETTING EVENT WITH ID {}", id);
+	public ResponseEntity<EventServiceResponse> getEventById(@PathVariable String id){
+		log.info("Getting event {}", id);
+
 		EventServiceModel event = eventService.getEventById(id);
-		return ResponseEntity.ok(mapToResponse(event));
-
+		return event != null ? ResponseEntity.ok(mapToResponse(event)) : ResponseEntity
+				.status(HttpStatus.NOT_FOUND) // 404
+				.build();
 	}
 
-	/*------- UPDATE EXISTING EVENT -------*/
+	/*---------- UPDATE EXISTING EVENT ----------*/
 	@PutMapping("/{id}")
-	public ResponseEntity<EventServiceResponse> updateEvent(@PathVariable String id,
-															@RequestBody EventServiceRequest eventRequest) {
-		log.info("UPDATING EVENT WITH ID {}", id);
-		EventServiceModel updatedEvent = eventService.updateEvent(eventRequest, id);
-		return ResponseEntity.ok(mapToResponse(updatedEvent));
+	public EventServiceResponse updateEvent(@PathVariable String id, @RequestBody EventServiceRequest eventRequest){
+
+		log.info("Updating event {}", id);
+
+		EventServiceModel event = mapToModel(eventRequest);
+		event.setId(id);
+
+		EventServiceModel updatedEvent = eventService.updateEvent(event);
+		return ResponseEntity.ok(mapToResponse(updatedEvent)).getBody();
 
 	}
 
-	/*------- DELETE BY ID -------*/
+	/*---------- DELETE BY ID ----------*/
 	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT) // 204
-	public void deleteEvent(@PathVariable String id) {
-		log.info("DELETING EVENT WITH ID {}", id);
+	@ResponseStatus(HttpStatus.NO_CONTENT) // 204 NO CONTENT
+	public void deleteEvent(@PathVariable String id){
+
+		log.info("Deleting event {}", id);
 		eventService.deleteEvent(id);
+
 	}
 
-	/*------- HELPER METHODS -------*/
-	private EventServiceResponse mapToResponse(EventServiceModel event) {
+	@GetMapping("/{id}/type")
+	@ResponseStatus(HttpStatus.OK)
+	public String getEventType(@PathVariable String id) {
+		return eventService.getEventType(id);
+	}
+
+	/*---------- HELPER METHODS ----------*/
+	private EventServiceModel mapToModel(EventServiceRequest request){
+
+		return EventServiceModel.builder()
+				.eventName(request.eventName())
+				.organizerId(request.organizerId())
+				.eventType(request.eventType())
+				.expectedAttendees(request.expectedAttendees())
+				.build();
+
+	}
+
+	private EventServiceResponse mapToResponse(EventServiceModel event){
+
 		return new EventServiceResponse(
 				event.getId(),
 				event.getEventName(),
 				event.getOrganizerId(),
 				event.getEventType(),
 				event.getExpectedAttendees()
+
 		);
 	}
-
-
 }
