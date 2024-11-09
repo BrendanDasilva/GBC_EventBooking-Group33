@@ -23,6 +23,10 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+    mainClass.set("ca.gbc.booking-service.BookingServiceApplication") // Update with your main class path
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

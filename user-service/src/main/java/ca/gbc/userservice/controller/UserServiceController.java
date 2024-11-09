@@ -20,6 +20,7 @@ public class UserServiceController {
 
   private final UserService userService;
 
+
   @PostMapping
   public ResponseEntity<UserServiceModel> createUser(@RequestBody UserServiceRequest request) {
     return ResponseEntity.ok(userService.createUser(request));

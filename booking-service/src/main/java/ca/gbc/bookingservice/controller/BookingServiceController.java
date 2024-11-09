@@ -4,6 +4,7 @@ import ca.gbc.bookingservice.dto.BookingServiceRequest;
 import ca.gbc.bookingservice.dto.BookingServiceResponse;
 import ca.gbc.bookingservice.model.BookingModel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
+@SpringBootApplication
 public class BookingServiceController {
 
     private final BookingServiceRequest bookingServiceRequest;
