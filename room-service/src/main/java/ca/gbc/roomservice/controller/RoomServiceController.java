@@ -13,42 +13,42 @@ import java.util.List;
 @RequestMapping("/api/rooms")
 public class RoomServiceController {
 
-  @Autowired
-  private RoomService roomService;
+    @Autowired
+    private RoomService roomService;
 
-  @PostMapping
-  public ResponseEntity<RoomServiceModel> addRoom(@RequestBody RoomServiceRequest request) {
-    RoomServiceModel room = roomService.addRoom(request);
-    return ResponseEntity.ok(room);
-  }
+    @PostMapping
+    public ResponseEntity<RoomServiceModel> addRoom(@RequestBody RoomServiceRequest request) {
+        RoomServiceModel room = roomService.addRoom(request);
+        return ResponseEntity.ok(room);
+    }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<RoomServiceModel> updateRoom(@PathVariable Long id, @RequestBody RoomServiceRequest request) {
-    RoomServiceModel room = roomService.updateRoom(id, request);
-    return ResponseEntity.ok(room);
-  }
+    @PutMapping("/{id}")
+    public ResponseEntity<RoomServiceModel> updateRoom(@PathVariable Long id, @RequestBody RoomServiceRequest request) {
+        RoomServiceModel room = roomService.updateRoom(id, request);
+        return ResponseEntity.ok(room);
+    }
 
-  @GetMapping
-  public ResponseEntity<List<RoomServiceModel>> getAllRooms() {
-    List<RoomServiceModel> rooms = roomService.getAllRooms();
-    return ResponseEntity.ok(rooms);
-  }
+    @GetMapping
+    public ResponseEntity<List<RoomServiceModel>> getAllRooms() {
+        List<RoomServiceModel> rooms = roomService.getAllRooms();
+        return ResponseEntity.ok(rooms);
+    }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<RoomServiceModel> getRoomById(@PathVariable Long id) {
-    RoomServiceModel room = roomService.getRoomById(id);
-    return ResponseEntity.ok(room);
-  }
+    @GetMapping("/{id}")
+    public ResponseEntity<RoomServiceModel> getRoomById(@PathVariable Long id) {
+        RoomServiceModel room = roomService.getRoomById(id);
+        return ResponseEntity.ok(room);
+    }
 
-  @GetMapping("/availability/{roomName}")
-  public ResponseEntity<Boolean> checkRoomAvailability(@PathVariable String roomName) {
-    boolean isAvailable = roomService.checkRoomAvailability(roomName);
-    return ResponseEntity.ok(isAvailable);
-  }
+    @GetMapping("/availability/{roomName}")
+    public ResponseEntity<Boolean> checkRoomAvailability(@PathVariable String roomName) {
+        boolean isAvailable = roomService.checkRoomAvailability(roomName);
+        return ResponseEntity.ok(isAvailable);
+    }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
-    roomService.deleteRoom(id);
-    return ResponseEntity.noContent().build();
-  }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+        roomService.deleteRoom(id);
+        return ResponseEntity.noContent().build();
+    }
 }

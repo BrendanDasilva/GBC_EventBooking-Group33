@@ -10,8 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomServiceRequest {
-  private String roomName;
-  private int capacity;
-  private List<String> features;
-  private boolean availability;
+    private String roomName;
+    private int capacity;
+    private List<String> features;
+    private boolean availability;
 }
