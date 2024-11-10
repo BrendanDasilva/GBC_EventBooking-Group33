@@ -8,15 +8,33 @@ import java.util.List;
 
 public interface BookingService {
 
-    // Method to create a new booking
+    /**
+     * Creates a new booking.
+     * @param bookingRequest the booking request containing the necessary details
+     * @return the created booking model
+     * @throws RoomNotAvailableException if the room is not available for the requested time range
+     */
     BookingModel createBooking(BookingServiceRequest bookingRequest) throws RoomNotAvailableException;
 
-    // Method to get all bookings
+    /**
+     * Retrieves all bookings.
+     * @return a list of all bookings
+     */
     List<BookingModel> getAllBookings();
 
-    // Method to update an existing booking
+    /**
+     * Updates an existing booking.
+     * @param bookingId the ID of the booking to update
+     * @param updatedRequest the updated booking request
+     * @return the updated booking model
+     * @throws RoomNotAvailableException if the room is not available for the new time range
+     */
     BookingModel updateBooking(Long bookingId, BookingServiceRequest updatedRequest) throws RoomNotAvailableException;
 
-    // Method to delete a booking
+    /**
+     * Deletes an existing booking.
+     * @param bookingId the ID of the booking to delete
+     * @throws RoomNotAvailableException if the booking to delete is not found
+     */
     void deleteBooking(Long bookingId) throws RoomNotAvailableException;
 }

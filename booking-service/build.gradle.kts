@@ -37,6 +37,7 @@ dependencies {
 
 	// Lombok (for reducing boilerplate code)
 	compileOnly("org.projectlombok:lombok")
+	annotationProcessor ("org.projectlombok:lombok")
 
 	// Development dependencies
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

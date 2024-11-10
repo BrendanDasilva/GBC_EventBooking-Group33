@@ -1,7 +1,6 @@
 package ca.gbc.bookingservice.dto;
 
 import java.time.LocalDateTime;
-
 import ca.gbc.bookingservice.model.BookingModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +19,13 @@ public class BookingServiceResponse {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String purpose;
+    private String message;  // This is the field for the message
+
+    // Constructor for error or status message response
+    public BookingServiceResponse(Long id, String message) {
+        this.id = id;
+        this.message = message;
+    }
 
     // Optional: Convert BookingModel to BookingServiceResponse
     public static BookingServiceResponse fromBookingModel(BookingModel bookingModel) {
@@ -29,7 +35,10 @@ public class BookingServiceResponse {
                 bookingModel.getRoomId(),
                 bookingModel.getStartTime(),
                 bookingModel.getEndTime(),
-                bookingModel.getPurpose()
+                bookingModel.getPurpose(),
+                null // Default message can be null if not needed
         );
     }
+
+
 }

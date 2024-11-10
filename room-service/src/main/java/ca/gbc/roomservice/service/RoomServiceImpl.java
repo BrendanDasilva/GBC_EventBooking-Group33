@@ -3,7 +3,6 @@ package ca.gbc.roomservice.service;
 import ca.gbc.roomservice.dto.RoomServiceRequest;
 import ca.gbc.roomservice.model.RoomServiceModel;
 import ca.gbc.roomservice.repository.RoomServiceRepository;
-import ca.gbc.roomservice.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +17,13 @@ public class RoomServiceImpl implements RoomService {
 
   @Override
   public RoomServiceModel addRoom(RoomServiceRequest request) {
+    // Create a new room model from the request
     RoomServiceModel room = RoomServiceModel.builder()
-        .roomName(request.getRoomName())
-        .capacity(request.getCapacity())
-        .features(request.getFeatures())
-        .availability(request.isAvailability())
-        .build();
+            .roomName(request.getRoomName())
+            .capacity(request.getCapacity())
+            .features(request.getFeatures())
+            .availability(request.isAvailability())
+            .build();
     return roomRepository.save(room);
   }
 
@@ -49,18 +49,23 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public RoomServiceModel getRoomById(Long id) {
     return roomRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
+            .orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
   }
 
   @Override
   public boolean checkRoomAvailability(String roomName) {
     return roomRepository.findByRoomName(roomName)
-        .map(RoomServiceModel::isAvailability)
-        .orElse(false);
+            .map(RoomServiceModel::isAvailability)
+            .orElse(false); // returns false if room not found
   }
 
   @Override
   public void deleteRoom(Long id) {
-
+    Optional<RoomServiceModel> roomOptional = roomRepository.findById(id);
+    if (roomOptional.isPresent()) {
+      roomRepository.deleteById(id);  // Delete room by id
+    } else {
+      throw new RuntimeException("Room not found with id: " + id);
+    }
   }
 }
