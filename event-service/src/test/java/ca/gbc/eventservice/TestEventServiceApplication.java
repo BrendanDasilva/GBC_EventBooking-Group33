@@ -1,5 +1,6 @@
 package ca.gbc.eventservice;
 
+
 import org.springframework.boot.SpringApplication;
 
 public class TestEventServiceApplication {

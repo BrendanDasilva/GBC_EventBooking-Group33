@@ -24,20 +24,36 @@ repositories {
 }
 
 dependencies {
+
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("jakarta.persistence:jakarta.persistence-api:3.0.0")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
+	runtimeOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mongodb")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// No Dependency on JPA
+//	testImplementation(project(":user-service"))
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+// ----- Disabling bootJar; not runnable Spring Boot Service -----
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+	enabled = false
+}
+
+
+//	runtimeOnly("org.postgresql:postgresql")
+//	testImplementation("io.rest-assured:rest-assured:5.2.0")
+//	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

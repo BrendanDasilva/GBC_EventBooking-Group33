@@ -40,7 +40,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     ports:
       - "27018:27017"
     networks:
@@ -54,7 +54,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     ports:
       - "27019:27017"
     networks:
@@ -83,7 +83,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./init/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     ports:
       - "21017:21027"
     networks:
