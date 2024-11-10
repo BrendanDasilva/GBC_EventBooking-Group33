@@ -14,9 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BookingServiceResponse {
 
-    private String id;
-    private String userId;
-    private String roomId;
+    private Long id;
+    private Long userId;
+    private Long roomId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String purpose;

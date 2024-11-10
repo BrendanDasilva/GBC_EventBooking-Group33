@@ -1,11 +1,7 @@
 package ca.gbc.bookingservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
@@ -19,22 +15,33 @@ import java.time.LocalDateTime;
 public class BookingModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Automatically generates the primary key (ID)
-    private String id; // Use Long for relational DB (auto-generated)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-increment for numeric primary keys
+    @Column(name = "id")  // Optional: specify the column name if different from the field name
+    private Long id;  // Primary key
 
-    private String userId;
-    private String roomId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "room_id", nullable = false)
+    private Long roomId;
+
+    @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
+
+    @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
+
+    @Column(name = "purpose")
     private String purpose;
 
     // Constructor with fields
-    public BookingModel(String userId, String roomId, LocalDateTime startTime, LocalDateTime endTime, String purpose) {
-        this.userId = userId;
-        this.roomId = roomId;
+    public BookingModel(Long userId, Long roomId, LocalDateTime startTime, LocalDateTime endTime, String purpose) {
+        this.userId = Long.valueOf(String.valueOf(userId));
+        this.roomId = Long.valueOf(String.valueOf(roomId));
         this.startTime = startTime;
         this.endTime = endTime;
         this.purpose = purpose;
     }
+
 
 }

@@ -2,75 +2,121 @@ package ca.gbc.bookingservice.dto;
 
 import ca.gbc.bookingservice.model.BookingModel;
 import ca.gbc.bookingservice.repository.BookingServiceRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import ca.gbc.bookingservice.exception.RoomNotAvailableException;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
-@Service
 public class BookingServiceRequest {
 
-    private final BookingServiceRepository bookingRepository;
+    private Long userId;
+    private Long roomId;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private String purpose;
 
-    // Constructor injection: The BookingRepository is passed as a constructor argument
-    public BookingServiceRequest(BookingServiceRepository bookingRepository) {
-        this.bookingRepository = bookingRepository;
+    // Constructors
+    public BookingServiceRequest() {}
+
+    public BookingServiceRequest(Long userId, Long roomId, LocalDateTime startTime, LocalDateTime endTime, String purpose) {
+        this.userId = userId;
+        this.roomId = roomId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.purpose = purpose;
     }
 
-    public BookingModel createBooking(BookingModel booking) throws Exception {
-        // Check for overlapping bookings (prevent double-booking)
-        Optional<BookingModel> existingBooking = bookingRepository.findByRoomIdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-                booking.getRoomId(), booking.getStartTime(), booking.getEndTime());
+    // Getters and Setters
+    public Long getUserId() {
+        return userId;
+    }
 
-        if (existingBooking.isPresent()) {
-            throw new Exception("The room is already booked for the specified time range.");
-        }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-        // Save and return the newly created booking
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
+    // Convert DTO to Entity
+    public BookingModel toEntity() {
+        return BookingModel.builder()
+                .userId(Long.valueOf(String.valueOf(this.userId)))
+                .roomId(Long.valueOf(String.valueOf(this.roomId)))
+                .startTime(this.startTime)
+                .endTime(this.endTime)
+                .purpose(this.purpose)
+                .build();
+    }
+
+    // CRUD Operations (placeholders, typically should be in service class)
+
+    // 1. Create a new booking (should actually be in the service layer)
+    public static BookingModel createBooking(BookingServiceRequest bookingRequest, BookingServiceRepository bookingRepository) throws RoomNotAvailableException {
+        BookingModel booking = bookingRequest.toEntity();
+        // Logic for room availability and creation
         return bookingRepository.save(booking);
     }
 
-    // READ: Get all bookings
-    public List<BookingModel> getAllBookings() {
-        return bookingRepository.findAll();
-    }
-    // UPDATE: Update an existing booking
-    public BookingModel updateBooking(String id, BookingModel updatedBooking) throws Exception {
-        Optional<BookingModel> existingBooking = bookingRepository.findById(id);
-
-        if (!existingBooking.isPresent()) {
-            throw new Exception("Booking not found.");
-        }
-
-        // If the room is already booked within the new time range, throw an exception
-        Optional<BookingModel> overlappingBooking = bookingRepository.findByRoomIdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-                updatedBooking.getRoomId(), updatedBooking.getStartTime(), updatedBooking.getEndTime());
-
-        if (overlappingBooking.isPresent() && !overlappingBooking.get().getId().equals(id)) {
-            throw new Exception("The room is already booked for the specified time range.");
-        }
-
-        // Update the booking and save it
-        BookingModel existing = existingBooking.get();
-        existing.setUserId(updatedBooking.getUserId());
-        existing.setRoomId(updatedBooking.getRoomId());
-        existing.setStartTime(updatedBooking.getStartTime());
-        existing.setEndTime(updatedBooking.getEndTime());
-        existing.setPurpose(updatedBooking.getPurpose());
-
-        return bookingRepository.save(existing);
+    // 2. Get an existing booking (usually using ID)
+    public static Optional<BookingModel> getBooking(Long bookingId, BookingServiceRepository bookingRepository) {
+        return bookingRepository.findById(String.valueOf(bookingId));
     }
 
-    // DELETE: Delete a booking by its ID
-    public void deleteBooking(String id) throws Exception {
-        Optional<BookingModel> existingBooking = bookingRepository.findById(id);
+    // 3. Update an existing booking
+    public static BookingModel updateBooking(Long bookingId, BookingServiceRequest updatedRequest, BookingServiceRepository bookingRepository) throws RoomNotAvailableException {
+        Optional<BookingModel> existingBookingOpt = bookingRepository.findById(String.valueOf(bookingId));
 
-        if (!existingBooking.isPresent()) {
-            throw new Exception("Booking not found.");
+        if (existingBookingOpt.isEmpty()) {
+            throw new RoomNotAvailableException("Booking not found.");
         }
 
-        // Delete the booking
-        bookingRepository.deleteById(id);
+        BookingModel existingBooking = existingBookingOpt.get();
+        existingBooking.setUserId(updatedRequest.getUserId());
+        existingBooking.setRoomId(updatedRequest.getRoomId());
+        existingBooking.setStartTime(updatedRequest.getStartTime());
+        existingBooking.setEndTime(updatedRequest.getEndTime());
+        existingBooking.setPurpose(updatedRequest.getPurpose());
+
+        return bookingRepository.save(existingBooking);
     }
 
+    // 4. Delete an existing booking
+    public static void deleteBooking(Long bookingId, BookingServiceRepository bookingRepository) throws RoomNotAvailableException {
+        Optional<BookingModel> existingBookingOpt = bookingRepository.findById(String.valueOf(bookingId));
+
+        if (existingBookingOpt.isEmpty()) {
+            throw new RoomNotAvailableException("Booking not found.");
+        }
+
+        bookingRepository.deleteById(String.valueOf(bookingId));
+    }
 }

@@ -13,41 +13,51 @@ java {
 	}
 }
 
-repositories {
-	mavenCentral()
-}
-
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.flywaydb:flyway-core")
-	implementation("org.flywaydb:flyway-database-postgresql")
-	implementation("org.postgresql:postgresql:42.7.2")
-	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-	compileOnly("org.projectlombok:lombok")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("org.postgresql:postgresql")
-	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.boot:spring-boot-testcontainers")
-	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:postgresql")
-	testImplementation("io.rest-assured:rest-assured:5.3.0")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
 configurations {
 	compileOnly {
 		extendsFrom(configurations.annotationProcessor.get())
 	}
 }
 
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot Starters
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+
+	// Jakarta Persistence API
+	implementation("jakarta.persistence:jakarta.persistence-api:3.0.0")
+
+	// Project dependencies for RoomService (ensure this path is correct)
+	implementation(project(":room-service"))
+
+	// Lombok (for reducing boilerplate code)
+	compileOnly("org.projectlombok:lombok")
+
+	// Development dependencies
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+	// Runtime dependencies
+	runtimeOnly("org.postgresql:postgresql")
+	runtimeOnly("org.springframework.boot:spring-boot-devtools")
+
+	// Test dependencies
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:mongodb")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-// Explicitly define the main class for the bootJar task
-tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-	mainClass.set("ca.gbc.booking-service.BookingServiceApplication") // Update with your main class path
+// ----- Disabling bootJar task as the service isn't runnable in Spring Boot directly -----
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+	enabled = false
 }
