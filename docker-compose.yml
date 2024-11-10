@@ -11,8 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - user_db_data:/var/lib/postgresql/data
-      - ./local-docker-file/postgres/user-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data/postgres/users:/var/lib/postgresql/data
     networks:
       - app_network
 
@@ -27,8 +26,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-      - ./local-docker-file/postgres/room/00-init.sql:/docker-entrypoint-initdb.d/00-init.sql
+      - ./data/postgres/rooms:/var/lib/postgresql/data
     networks:
       - app_network
 
@@ -40,7 +38,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./data/mongo/events:/data/db
+      - ./init/mongo/docker-entrypoint-initdb.d/event-init.js:/docker-entrypoint-initdb.d/event-init.js
     ports:
       - "27018:27017"
     networks:
@@ -54,24 +53,9 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./data/mongo/approvals:/data/db
     ports:
       - "27019:27017"
-    networks:
-      - app_network
-
-  # Mongo Express for ApprovalService
-  mongo-express-approval:
-    image: mongo-express
-    ports:
-      - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_SERVER=approval-db
-    container_name: mongo_express_approval
-    depends_on:
-      - approval-db
     networks:
       - app_network
 
@@ -83,9 +67,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./data/mongo/bookings:/data/db
+      - ./init/mongo/docker-entrypoint-initdb.d/booking-init.js:/docker-entrypoint-initdb.d/booking-init.js
     ports:
-      - "21017:21027"
+      - "21017:21017"
     networks:
       - app_network
 
@@ -103,6 +88,7 @@ services:
 
   # UserService
   user-service:
+    image: user-service
     build:
       context: ./user-service
       dockerfile: Dockerfile
@@ -117,11 +103,12 @@ services:
 
   # RoomService
   room-service:
+    image: room-service
     build:
       context: ./room-service
       dockerfile: Dockerfile
     ports:
-      - "8095:8095"
+      - "8091:8091"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -131,6 +118,7 @@ services:
 
   # EventService
   event-service:
+    image: event-service
     build:
       context: ./event-service
       dockerfile: Dockerfile
@@ -145,6 +133,7 @@ services:
 
   # BookingService
   booking-service:
+    image: booking-service
     build:
       context: ./booking-service
       dockerfile: Dockerfile
@@ -159,11 +148,13 @@ services:
 
   # ApprovalService
   approval-service:
+    image: approval-service
+    ports:
+      - "8094:8094"
     build:
       context: ./approval-service
       dockerfile: Dockerfile
-    ports:
-      - "8094:8094"
+    container_name: approval-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -171,12 +162,24 @@ services:
     networks:
       - app_network
 
-volumes:
-  user_db_data:
-  room_db_data:
-  event_db_data:
-  booking_db_data:
-  approval_db_data:
+  # Mongo Express for all Services
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=approval-db
+      - ME_CONFIG_MONGODB_URL_event_db=mongodb://admin:password@event-db:27017
+      - ME_CONFIG_MONGODB_URL_booking_db=mongodb://admin:password@booking-db:27017
+    container_name: mongo_express_pkg
+    depends_on:
+      - approval-db
+      - event-db
+      - booking-db
+    networks:
+      - app_network
 
 networks:
   app_network:

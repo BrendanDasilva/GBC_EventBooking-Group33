@@ -23,6 +23,6 @@ COPY --from=builder /home/gradle/src/build/libs/*.jar /app/room-service.jar
 ENV POSTGRES_USER=admin \
     POSTGRES_PASSWORD=password
 
-EXPOSE 8090
+EXPOSE 8091
 
 ENTRYPOINT ["java", "-jar", "/app/room-service.jar"]

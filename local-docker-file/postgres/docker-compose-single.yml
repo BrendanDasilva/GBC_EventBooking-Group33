@@ -14,7 +14,7 @@ services:
       - POSTGRES_PASSWORD=password
     volumes:
       - ./data/order:/var/lib/postgresql/data
-      - ./local-docker-file/postgres/init/user/init.sql:/docker-entrypoint-initdb.d/00-init.sql
+      - ./local-docker-file/postgres/init/user/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./db.migration/V1__init.sql:/docker-entrypoint-initdb.d/01-V1__init.sql
 
   pgadmin:

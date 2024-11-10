@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./local-docker-file/postgres/room-service/00-init.sql:/docker-entrypoint-initdb.d/00-init.sql
+      - ./local-docker-file/postgres/room-service/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./db.migration/V1__init.sql:/docker-entrypoint-initdb.d/01-V1__init.sql
 
   pgadmin:
