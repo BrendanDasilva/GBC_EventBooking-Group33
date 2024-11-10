@@ -2,9 +2,9 @@ package ca.gbc.eventservice.dto;
 
 public record EventServiceResponse(
 
-		String id,
+		String eventId,
 		String eventName,
 		String organizerId,
 		String eventType,
-		int eventAttendees
+		int expectedAttendees
 ) {}

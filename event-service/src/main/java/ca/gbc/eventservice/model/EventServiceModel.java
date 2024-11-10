@@ -1,16 +1,14 @@
 package ca.gbc.eventservice.model;
 
-import lombok.Data;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Document(collection = "events")
 public class EventServiceModel {
 
@@ -20,6 +18,4 @@ public class EventServiceModel {
 	private String organizerId;
 	private String eventType;
 	private int expectedAttendees;
-
-
 }

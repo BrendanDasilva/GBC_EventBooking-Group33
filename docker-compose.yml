@@ -33,16 +33,16 @@ services:
       - app_network
 
   # MongoDB for EventService
-  event-db:
+  events-db:
     image: mongo:latest
-    container_name: event_db
+    container_name: events-db
+    ports:
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-    ports:
-      - "27018:27017"
     networks:
       - app_network
 
@@ -119,14 +119,16 @@ services:
   # EventService
   event-service:
     build:
-      context: ./event-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./Dockerfile
+    image: event-service:latest
+    container_name: event-service
     ports:
       - "8092:8092"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
-      - event-db
+      - events-db
     networks:
       - app_network
 

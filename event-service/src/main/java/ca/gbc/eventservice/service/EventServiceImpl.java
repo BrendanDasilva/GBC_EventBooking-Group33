@@ -1,91 +1,60 @@
 package ca.gbc.eventservice.service;
 
-import ca.gbc.eventservice.dto.EventServiceRequest;
-import ca.gbc.eventservice.dto.EventServiceResponse;
-import ca.gbc.eventservice.model.EventServiceModel;
-import ca.gbc.eventservice.repository.EventServiceRepository;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ca.gbc.eventservice.model.EventServiceModel;
+import ca.gbc.eventservice.repository.EventServiceRepository;
 
 
+
+
+@SuppressWarnings("ALL")
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class EventServiceImpl implements EventService {
+public class EventServiceImpl implements ca.gbc.eventservice.services.EventService {
 
-	private final EventServiceRepository eventRepository;
+	private final EventServiceRepository eventServiceRepository;
 
-	/*----- CREATE EVENT -----*/
 	@Override
-	public EventServiceModel createEvent(EventServiceRequest eventRequest){
-
-		EventServiceModel eventServiceModel = new EventServiceModel(
-				null,
-				eventRequest.eventName(),
-				eventRequest.organizerId(),
-				eventRequest.eventType(),
-				eventRequest.expectedAttendees()
-		);
-
-		return eventRepository.save(eventServiceModel);
+	public EventServiceModel createEvent(EventServiceModel eventModel) {
+		log.info("CREATING EVENT: {}", eventModel);
+		return eventServiceRepository.save(eventModel);
 	}
 
-	/*----- GET ALL EVENTS -----*/
 	@Override
-	public List<EventServiceModel> getAllEvents(){
-		return eventRepository.findAll();
+	public EventServiceModel updateEvent(String eventId, EventServiceModel updateEventModel) {
+		log.info("UPDATING EVENT: {}", updateEventModel);
+		return eventServiceRepository.findById(eventId)
+				.map(existingEvent -> {
+					existingEvent.setEventName(updateEventModel.getEventName());
+					existingEvent.setOrganizerId(updateEventModel.getOrganizerId());
+					existingEvent.setEventType(updateEventModel.getEventType());
+					existingEvent.setExpectedAttendees(updateEventModel.getExpectedAttendees());
+					return eventServiceRepository.save(existingEvent);
+				})
+				.orElseThrow(() -> new RuntimeException("--- EVENT NOT FOUND"));
 	}
 
-	/*----- GET EVENT BY ID -----*/
 	@Override
-	public EventServiceModel getEventById(String id){
-		return eventRepository.findById(id)
-				.orElseThrow(()-> new RuntimeException("Event with id " + id + " not found"));
-	}
-
-	/*----- UPDATE EVENT -----*/
-	@Override
-	public EventServiceModel updateEvent(EventServiceRequest eventRequest, String id){
-
-		EventServiceModel event = getEventById(id);
-		event.setEventName(eventRequest.eventName());
-		event.setOrganizerId(eventRequest.organizerId());
-		event.setEventType(eventRequest.eventType());
-		event.setExpectedAttendees(eventRequest.expectedAttendees());
-		return eventRepository.save(event);
+	public EventServiceModel getEventById(String eventId) {
+		return eventServiceRepository.findById(eventId)
+				.orElseThrow(() -> new RuntimeException("--- EVENT NOT FOUND"));
 
 	}
 
-
-	/*----- DELETE EVENT -----*/
 	@Override
-	public void deleteEvent(String id){
-		eventRepository.deleteById(id);
+	public List<EventServiceModel> getAllEvents() {
+		return eventServiceRepository.findAll();
 	}
 
-	/*----- GET EVENT TYPE  -----*/
 	@Override
-	public String getEventType(String id) {
-		EventServiceModel event = eventRepository.findById(id)
-				.orElseThrow(()-> new RuntimeException("Event with id " + id + " not found"));
-		return event.getEventType();
+	public void deleteEvent(String eventId) {
+		log.info("DELETING EVENT: {}", eventId);
+		eventServiceRepository.deleteById(eventId);
 	}
-
-	/*----- SAVE EVENT  -----*/
-	@Override
-	public EventServiceModel savedEvent(EventServiceRequest eventRequest) {
-		EventServiceModel eventServiceModel = new EventServiceModel(
-				null,
-				eventRequest.eventName(),
-				eventRequest.organizerId(),
-				eventRequest.eventType(),
-				eventRequest.expectedAttendees()
-		);
-		return eventRepository.save(eventServiceModel);
-	}
-
-
 }

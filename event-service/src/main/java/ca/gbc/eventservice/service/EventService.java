@@ -1,28 +1,19 @@
-package ca.gbc.eventservice.service;
+package ca.gbc.eventservice.services;
 
-import ca.gbc.eventservice.dto.EventServiceRequest;
 import ca.gbc.eventservice.model.EventServiceModel;
+
 import java.util.List;
 
 
 public interface EventService {
 
-	EventServiceModel createEvent(EventServiceRequest eventRequest);
+	EventServiceModel createEvent(EventServiceModel eventModel);
 
-	EventServiceModel updateEvent(EventServiceRequest eventRequest, String id);
+	EventServiceModel updateEvent(String eventId, EventServiceModel updateEventModel);
 
-	EventServiceModel savedEvent(EventServiceRequest eventRequest);
+	EventServiceModel getEventById(String eventId);
 
 	List<EventServiceModel> getAllEvents();
 
-	EventServiceModel getEventById(String id);
-
-	String getEventType(String id);
-
-
-	void deleteEvent(String id);
-
-
-
-
+	void deleteEvent(String eventId);
 }

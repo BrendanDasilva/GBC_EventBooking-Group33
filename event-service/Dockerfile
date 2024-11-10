@@ -18,11 +18,11 @@ FROM openjdk:22-jdk
 
 RUN mkdir /app
 
-COPY --from=builder /home/gradle/src/build/libs/*.jar /app/product-service.jar
+COPY --from=builder /home/gradle/src/build/libs/*.jar /app/user-service.jar
 
-ENV MONGO_DB_USERNAME=admin \
-    MONGO_DB_PWD=password
+ENV POSTGRES_USER=admin \
+    POSTGRES_PASSWORD=password
 
-EXPOSE 8084
+EXPOSE 8092
 
-ENTRYPOINT ["java", "-jar", "/app/product-service.jar"]
+ENTRYPOINT ["java", "-jar", "/app/user-service.jar"]

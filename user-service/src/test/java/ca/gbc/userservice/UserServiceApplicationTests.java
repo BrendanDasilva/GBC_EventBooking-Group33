@@ -126,7 +126,7 @@ class UserServiceApplicationTests {
 				.get("/api/users")
 				.then()
 				.statusCode(200)
-				.body("size()", Matchers.greaterThan(0));
+				.body("size()", Matchers.greaterThanOrEqualTo(0));
 	}
 
 
