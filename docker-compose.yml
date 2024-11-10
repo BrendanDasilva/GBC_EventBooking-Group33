@@ -70,7 +70,7 @@ services:
       - ./data/mongo/bookings:/data/db
       - ./init/mongo/docker-entrypoint-initdb.d/booking-init.js:/docker-entrypoint-initdb.d/booking-init.js
     ports:
-      - "21017:21017"
+      - "27017:27017"
     networks:
       - app_network
 

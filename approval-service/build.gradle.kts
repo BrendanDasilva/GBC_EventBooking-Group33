@@ -51,6 +51,6 @@ tasks.withType<Test> {
 }
 
 // ----- Disabling bootJar; not runnable Spring Boot Service -----
-tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
-	enabled = false
-}
+//tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+//	enabled = false
+//}
