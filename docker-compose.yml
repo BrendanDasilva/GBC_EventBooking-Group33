@@ -5,13 +5,14 @@ services:
     image: postgres:latest
     container_name: user_db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: user-service
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=user-service
     ports:
       - "5432:5432"
     volumes:
       - ./data/postgres/users:/var/lib/postgresql/data
+#      - ./local-docker-file/postgres/init/user/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app_network
 
@@ -20,69 +21,14 @@ services:
     image: postgres:latest
     container_name: room_db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: room-service
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=room-service
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - ./data/postgres/rooms:/var/lib/postgresql/data
-    networks:
-      - app_network
-
-  # MongoDB for EventService
-  event-db:
-    image: mongo:latest
-    container_name: event_db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    volumes:
-      - ./data/mongo/events:/data/db
-      - ./init/mongo/docker-entrypoint-initdb.d/event-init.js:/docker-entrypoint-initdb.d/event-init.js
-    ports:
-      - "27018:27017"
-    networks:
-      - app_network
-
-  #MongoDB for ApprovalService
-  approval-db:
-    image: mongo:latest
-    container_name: approval_db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    volumes:
-      - ./data/mongo/approvals:/data/db
-    ports:
-      - "27019:27017"
-    networks:
-      - app_network
-
-  # MongoDB for BookingService
-  booking-db:
-    image: mongo:latest
-    container_name: booking_db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    volumes:
-      - ./data/mongo/bookings:/data/db
-      - ./init/mongo/docker-entrypoint-initdb.d/booking-init.js:/docker-entrypoint-initdb.d/booking-init.js
-    ports:
-      - "21017:21017"
-    networks:
-      - app_network
-
-  # pgAdmin
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_app
-    environment:
-      PGADMIN_DEFAULT_EMAIL: user@domain.ca
-      PGADMIN_DEFAULT_PASSWORD: password
-    ports:
-      - "8889:80"
+#      - ./local-docker-file/postgres/init/room/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app_network
 
@@ -113,6 +59,62 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - room-db
+    networks:
+      - app_network
+
+  # pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_app
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.ca
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "8889:80"
+    networks:
+      - app_network
+
+  # MongoDB for EventService
+  event-db:
+    image: mongo:latest
+    container_name: event_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./data/mongo/events:/data/db
+#      - ./init/mongo/docker-entrypoint-initdb.d/event-init.js:/docker-entrypoint-initdb.d/event-init.js
+    ports:
+      - "27018:27017"
+    networks:
+      - app_network
+
+  #MongoDB for ApprovalService
+  approval-db:
+    image: mongo:latest
+    container_name: approval_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./data/mongo/approvals:/data/db
+    ports:
+      - "27019:27017"
+    networks:
+      - app_network
+
+  # MongoDB for BookingService
+  booking-db:
+    image: mongo:latest
+    container_name: booking_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./data/mongo/bookings:/data/db
+#      - ./init/mongo/docker-entrypoint-initdb.d/booking-init.js:/docker-entrypoint-initdb.d/booking-init.js
+    ports:
+      - "27017:27017"
     networks:
       - app_network
 
