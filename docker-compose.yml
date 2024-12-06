@@ -1,5 +1,49 @@
 version: '3.8'
 services:
+
+  # keycloak
+  keycloak:
+    container_name: keycloak
+    hostname: keycloak
+    image: quay.io/keycloak/keycloak:24.0.1
+    command: [ "start-dev", "--import-realm" ]
+    environment:
+      DB_VENDOR: postgres
+      DB_ADDR: postgres-keycloak
+      DB_DATABASE: keycloak
+      DB_USER: admin
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+      ROOT_LOGLEVEL: DEBUG
+      JBOSS_LOG_MANAGER_ROOT_LOGGER: DEBUG, stdout, FILE
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./local-docker-file/keycloak/realms/:/opt/keycloak/data/import/
+    depends_on:
+      - postgres-keycloak
+    networks:
+      - app_network
+
+
+  #api-gateway
+  api-gateway:
+    image: api-gateway
+    ports:
+      - "9000:9000"
+    build:
+      context: ./api-gateway
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      #      SPRING_APPLICATION_JSON={"logging":{"level":{"root":"INFO, "ca.gbc.apigateway":"DEBUG}:
+      SPRING_APPLICATION_JSON={"logging":{"level":{"root":"INFO","ca:gbc:apigateway":"DEBUG"}}}:
+    container_name: api-gateway
+    networks:
+      - app_network
+
+
   # PostgresSQL for UserService
   user-db:
     image: postgres:latest
@@ -14,6 +58,7 @@ services:
       - ./data/postgres/users:/var/lib/postgresql/data
     networks:
       - app_network
+
 
   # PostgreSQL for RoomService
   room-db:
@@ -30,6 +75,7 @@ services:
     networks:
       - app_network
 
+
   # MongoDB for EventService
   event-db:
     image: mongo:latest
@@ -45,6 +91,7 @@ services:
     networks:
       - app_network
 
+
   #MongoDB for ApprovalService
   approval-db:
     image: mongo:latest
@@ -58,6 +105,7 @@ services:
       - "27019:27017"
     networks:
       - app_network
+
 
   # MongoDB for BookingService
   booking-db:
@@ -74,6 +122,24 @@ services:
     networks:
       - app_network
 
+
+  # postgres-keycloak
+  postgres-keycloak:
+    container_name: postgres-keycloak
+    image: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - ./data/postgres/postgres-keycloak:/data/postgres
+    ports:
+      - "5431:5432"
+    networks:
+      - app_network
+
+
   # pgAdmin
   pgadmin:
     image: dpage/pgadmin4
@@ -85,6 +151,7 @@ services:
       - "8889:80"
     networks:
       - app_network
+
 
   # UserService
   user-service:
@@ -101,6 +168,7 @@ services:
     networks:
       - app_network
 
+
   # RoomService
   room-service:
     image: room-service
@@ -115,6 +183,7 @@ services:
       - room-db
     networks:
       - app_network
+
 
   # EventService
   event-service:
@@ -131,6 +200,7 @@ services:
     networks:
       - app_network
 
+
   # BookingService
   booking-service:
     image: booking-service
@@ -145,6 +215,7 @@ services:
       - booking-db
     networks:
       - app_network
+
 
   # ApprovalService
   approval-service:
@@ -161,6 +232,7 @@ services:
       - approval-db
     networks:
       - app_network
+
 
   # Mongo Express for all Services
   mongo-express:
@@ -180,6 +252,7 @@ services:
       - booking-db
     networks:
       - app_network
+
 
 networks:
   app_network:
