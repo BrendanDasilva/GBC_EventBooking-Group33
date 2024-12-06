@@ -2,98 +2,117 @@ package ca.gbc.bookingservice.controller;
 
 import ca.gbc.bookingservice.dto.BookingServiceRequest;
 import ca.gbc.bookingservice.dto.BookingServiceResponse;
+import ca.gbc.bookingservice.exception.RoomNotAvailableException;
 import ca.gbc.bookingservice.model.BookingModel;
-import lombok.RequiredArgsConstructor;
+import ca.gbc.bookingservice.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookings")
-@RequiredArgsConstructor
 public class BookingServiceController {
 
-	private final BookingServiceRequest bookingServiceRequest;
+	private final BookingService bookingService;
 
-	// POST - Create a new booking
+	// Constructor Injection for BookingService
+	public BookingServiceController(BookingService bookingService) {
+		this.bookingService = bookingService;
+	}
+
 	@PostMapping
-	public ResponseEntity<BookingServiceResponse> createBooking(@RequestBody BookingModel booking) {
+	public ResponseEntity<BookingServiceResponse> createBooking(@RequestBody BookingServiceRequest bookingRequest) {
 		try {
-			// Call service to create booking
-			BookingModel newBooking = bookingServiceRequest.createBooking(booking);
+			// Attempt to create a booking using the BookingService
+			BookingModel createdBooking = bookingService.createBooking(bookingRequest);
 
-			// Convert the model to response DTO
+			// Build a response to indicate booking creation success
 			BookingServiceResponse response = new BookingServiceResponse(
-					newBooking.getId(),
-					newBooking.getUserId(),
-					newBooking.getRoomId(),
-					newBooking.getStartTime(),
-					newBooking.getEndTime(),
-					newBooking.getPurpose()
+					createdBooking.getId(), // Booking ID from the created booking
+					"Booking created successfully." // Success message
 			);
 
+			// Return ResponseEntity with HTTP Status CREATED (201)
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (RoomNotAvailableException e) {
+			// Handle exception where the room is not available for the specified time
+			BookingServiceResponse response = new BookingServiceResponse(
+					null,  // No ID for error response
+					e.getMessage()  // Error message from exception
+			);
+
+			// Return ResponseEntity with HTTP Status BAD REQUEST (400)
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	// GET - Get all bookings
 	@GetMapping
 	public ResponseEntity<List<BookingServiceResponse>> getAllBookings() {
-		// Get all bookings from the service
-		List<BookingModel> bookings = bookingServiceRequest.getAllBookings();
+		List<BookingModel> bookings = bookingService.getAllBookings();
 
-		// Convert the list of models to a list of response DTOs
+		// Convert BookingModel list to BookingServiceResponse list
 		List<BookingServiceResponse> responseList = bookings.stream()
-				.map(booking -> new BookingServiceResponse(
-						booking.getId(),
-						booking.getUserId(),
-						booking.getRoomId(),
-						booking.getStartTime(),
-						booking.getEndTime(),
-						booking.getPurpose()
-				))
-				.collect(Collectors.toList());
+				.map(BookingServiceResponse::fromBookingModel)
+				.toList();
 
+		// Return ResponseEntity with HTTP Status OK (200)
 		return new ResponseEntity<>(responseList, HttpStatus.OK);
 	}
 
-	// PUT - Update an existing booking by ID
-	@PutMapping("/{id}")
-	public ResponseEntity<BookingServiceResponse> updateBooking(@PathVariable String id, @RequestBody BookingModel updatedBooking) {
-		try {
-			// Call the service to update booking
-			BookingModel updated = bookingServiceRequest.updateBooking(id, updatedBooking);
 
-			// Convert the updated model to response DTO
+	@PutMapping("/{id}")
+	public ResponseEntity<BookingServiceResponse> updateBooking(@PathVariable Long id,
+																@RequestBody BookingServiceRequest updatedRequest) {
+		try {
+			// Attempt to update the booking using the BookingService
+			BookingModel updatedBooking = bookingService.updateBooking(id, updatedRequest);
+
+			// Build a response for the updated booking
 			BookingServiceResponse response = new BookingServiceResponse(
-					updated.getId(),
-					updated.getUserId(),
-					updated.getRoomId(),
-					updated.getStartTime(),
-					updated.getEndTime(),
-					updated.getPurpose()
+					updatedBooking.getId(), // Updated Booking ID
+					"Booking updated successfully." // Success message
 			);
 
+			// Return ResponseEntity with HTTP Status OK (200)
 			return new ResponseEntity<>(response, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (RoomNotAvailableException e) {
+			// Handle exception if the room is not available during update
+			BookingServiceResponse response = new BookingServiceResponse(
+					null, // No ID for error response
+					e.getMessage() // Error message from exception
+			);
+
+			// Return ResponseEntity with HTTP Status BAD REQUEST (400)
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	// DELETE - Delete a booking by ID
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteBooking(@PathVariable String id) {
+	public ResponseEntity<BookingServiceResponse> deleteBooking(@PathVariable Long id) {
 		try {
-			// Call the service to delete the booking
-			bookingServiceRequest.deleteBooking(id);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			// Attempt to delete the booking with the specified ID
+			bookingService.deleteBooking(id);
+
+			// Build a response for successful deletion
+			BookingServiceResponse response = new BookingServiceResponse(
+					null,  // No ID for successful deletion response
+					"Booking deleted successfully." // Success message
+			);
+
+			// Return ResponseEntity with HTTP Status OK (200)
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			// Handle error (e.g., booking not found)
+			BookingServiceResponse response = new BookingServiceResponse(
+					null,  // No ID for error response
+					"Booking not found"  // Error message
+			);
+
+			// Return ResponseEntity with HTTP Status NOT FOUND (404)
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 	}
 }
