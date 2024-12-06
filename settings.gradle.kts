@@ -4,4 +4,5 @@ include(
     "booking-service",
     "user-service",
     "event-service",
-    "approval-service")
+    "approval-service",
+    "api-gateway")
