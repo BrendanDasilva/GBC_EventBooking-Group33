@@ -30,7 +30,6 @@ dependencyManagement{
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -51,7 +50,7 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.bootJar{
-	mainClass.set("ca.gbc.approvalservice.ApprovalServiceApplication")
-}
-
+//// ----- Disabling bootJar; not runnable Spring Boot Service -----
+//tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+//	enabled = false
+//}

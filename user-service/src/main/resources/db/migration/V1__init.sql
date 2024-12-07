@@ -1,7 +1,7 @@
 -- Create database and grant privileges
-CREATE DATABASE "user-service";
-GRANT ALL PRIVILEGES ON DATABASE "user-service" TO "admin";
-
+-- CREATE DATABASE "user-service";
+-- GRANT ALL PRIVILEGES ON DATABASE "user-service" TO "admin";
+--
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,

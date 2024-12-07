@@ -24,7 +24,6 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -45,10 +44,6 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.bootJar {
-	mainClass.set("ca.gbc.userservice.UserServiceApplication")
-}
-//
 //// ----- Disabling bootJar; not runnable Spring Boot Service -----
 //tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
 //	enabled = false
