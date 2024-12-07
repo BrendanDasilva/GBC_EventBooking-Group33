@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(22)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -44,8 +44,13 @@ dependencies {
 //	testImplementation(project(":user-service"))
 }
 
-tasks.bootJar{
-	mainClass.set("ca.gbc.event-service.EventServiceApplication")
+//tasks.bootJar{
+//	mainClass.set("ca.gbc.eventservice.EventServiceApplication")
+//}
+
+
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+	enabled = false
 }
 
 tasks.withType<Test> {

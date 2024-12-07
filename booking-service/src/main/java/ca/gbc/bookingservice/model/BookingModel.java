@@ -1,16 +1,12 @@
 package ca.gbc.bookingservice.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "bookings")
+@Document(collection = "bookings") // MongoDB annotation
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,18 +15,16 @@ import java.time.LocalDateTime;
 public class BookingModel {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;  // Lombok @Getter will generate getId() automatically
+	private String id; // MongoDB expects a String ID
 
-	@Column(name="booking_number")
+	@Column(name = "booking_number")
 	private String bookingNumber;
 
 	@Column(name = "user_id", nullable = false)
-	private Long userId;
+	private String userId; // Changed to String
 
 	@Column(name = "room_id", nullable = false)
-	private Long roomId;
+	private String roomId; // Changed to String
 
 	@Column(name = "start_time", nullable = false)
 	private LocalDateTime startTime;
@@ -41,10 +35,7 @@ public class BookingModel {
 	@Column(name = "purpose")
 	private String purpose;
 
-	// Fields for UserDetails
 	private String email;
 	private String firstName;
 	private String lastName;
-
-
 }

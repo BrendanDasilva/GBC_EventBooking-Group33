@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(22)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -51,9 +51,11 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.bootJar{
-	mainClass.set("ca.gbc.approval-service.ApprovalServiceApplication")
-}
+//tasks.bootJar{
+//	mainClass.set("ca.gbc.approvalservice.ApprovalServiceApplication")
+//}
+
+
 
 // ----- Disabling bootJar; not runnable Spring Boot Service -----
 //tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

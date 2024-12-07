@@ -1,9 +1,9 @@
-version: '3.8'
+#version: '3.8'
 services:
 
   # keycloak
   keycloak:
-    container_name: keycloak
+    container_name: keycloak3
     hostname: keycloak
     image: quay.io/keycloak/keycloak:24.0.1
     command: [ "start-dev", "--import-realm" ]
@@ -28,20 +28,20 @@ services:
 
 
   #api-gateway
-  api-gateway:
-    image: api-gateway
-    ports:
-      - "9000:9000"
-    build:
-      context: ./api-gateway
-      dockerfile: Dockerfile
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      #      SPRING_APPLICATION_JSON={"logging":{"level":{"root":"INFO, "ca.gbc.apigateway":"DEBUG}:
-      SPRING_APPLICATION_JSON={"logging":{"level":{"root":"INFO","ca:gbc:apigateway":"DEBUG"}}}:
-    container_name: api-gateway
-    networks:
-      - app_network
+#  api-gateway:
+#    image: api-gateway
+#    ports:
+#      - "9000:9000"
+#    build:
+ #     context: ./api-gateway
+ #     dockerfile: Dockerfile
+ #   environment:
+ #     SPRING_PROFILES_ACTIVE: docker
+ #     #      SPRING_APPLICATION_JSON={"logging":{"level":{"root":"INFO, "ca.gbc.apigateway":"DEBUG}:
+ #     SPRING_APPLICATION_JSON={"logging":{"level":{"root":"INFO","ca:gbc:apigateway":"DEBUG"}}}:
+ #   container_name: api-gateway3
+  #  networks:
+ #     - app_network
 
 
   # PostgresSQL for UserService
@@ -65,15 +65,17 @@ services:
     image: postgres:latest
     container_name: room_db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: room-service
+      - POSTGRES_DB=room-service
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/data/postgres
     ports:
-      - "5433:5432"
+      - "5435:5432"
     volumes:
-      - ./data/postgres/rooms:/var/lib/postgresql/data
+      - ./data/postgres/room-db:/var/lib/postgresql/data
+      - ./init/postgres/room/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - app_network
+      - spring
 
 
   # MongoDB for EventService
@@ -109,35 +111,36 @@ services:
 
   # MongoDB for BookingService
   booking-db:
-    image: mongo:latest
+    image: postgres
     container_name: booking_db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
+      - POSTGRES_DB=booking-service
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/data/postgres
     volumes:
-      - ./data/mongo/bookings:/data/db
-      - ./init/mongo/docker-entrypoint-initdb.d/booking-init.js:/docker-entrypoint-initdb.d/booking-init.js
+      - ./data/postgres/booking-db:/var/lib/postgresql/data
+      - ./init/postgres/booking/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "27017:27017"
+      - "27020:27017"
     networks:
       - app_network
 
 
-  # postgres-keycloak
   postgres-keycloak:
-    container_name: postgres-keycloak
+    container_name: postgres-keycloak3
     image: postgres
     environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      PGDATA: /data/postgres
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/data/postgres
     volumes:
-      - ./data/postgres/postgres-keycloak:/data/postgres
+      - ./data/postgres/postgres-keycloak:/var/lib/postgresql/data
     ports:
       - "5431:5432"
     networks:
-      - app_network
+      - spring
 
 
   # pgAdmin
@@ -154,85 +157,96 @@ services:
 
 
   # UserService
-  user-service:
-    image: user-service
-    build:
-      context: .
-      dockerfile: user-service/Dockerfile
-    ports:
-      - "8090:8090"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - user-db
-    networks:
-      - app_network
+    #   user-service:
+      #   build:
+      #     context: .
+    #   dockerfile: user-service/Dockerfile
+      #     ports:
+    #       - "8090:8090"
+      #     environment:
+    #       SPRING_PROFILES_ACTIVE: docker
+      #     depends_on:
+    #      - user-db
+      #    networks:
+  #     - app_network
 
 
   # RoomService
-  room-service:
-    image: room-service
-    build:
-      context: .
-      dockerfile: room-service/Dockerfile
-    ports:
-      - "8091:8091"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - room-db
-    networks:
-      - app_network
+    #   room-service:
+      #     build:
+      #      context: .
+    #      dockerfile: room-service/Dockerfile
+      #    ports:
+    #      - "8091:8091"
+      #   environment:
+    #     SPRING_PROFILES_ACTIVE: docker
+      #   depends_on:
+    #     - room-db
+      #   networks:
+  #     - app_network
 
 
   # EventService
-  event-service:
-    image: event-service
-    build:
-      context: .
-      dockerfile: event-service/Dockerfile
-    ports:
-      - "8092:8092"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - event-db
-    networks:
-      - app_network
+    #   event-service:
+      #     build:
+      #       context: .
+    #       dockerfile: event-service/Dockerfile
+      #     ports:
+    #       - "8092:8092"
+      #    environment:
+    #       SPRING_PROFILES_ACTIVE: docker
+      #    depends_on:
+    #      - event-db
+      #    networks:
+  #      - app_network
 
 
   # BookingService
-  booking-service:
-    image: booking-service
-    build:
-      context: .
-      dockerfile: booking-service/Dockerfile
-    ports:
-      - "8093:8093"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - booking-db
-    networks:
-      - app_network
+    #  booking-service:
+      #    build:
+      #      context: .
+    #      dockerfile: booking-service/Dockerfile
+      #    ports:
+    #      - "8093:8093"
+      #   environment:
+    #     SPRING_PROFILES_ACTIVE: docker
+      #   depends_on:
+      #     - booking-db
+    #     - room-db
+      #   networks:
+  #     - app_network
 
 
   # ApprovalService
-  approval-service:
-    image: approval-service
-    ports:
-      - "8094:8094"
-    build:
-      context: .
-      dockerfile: approval-service/Dockerfile
-    container_name: approval-service
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - approval-db
-    networks:
-      - app_network
+    #   approval-service:
+      #     ports:
+    #      - "8094:8094"
+      #    build:
+      #      context: .
+    #      dockerfile: approval-service/Dockerfile
+    #     container_name: approval-service
+      #    environment:
+    #       SPRING_PROFILES_ACTIVE: docker
+      #     depends_on:
+    #      - approval-db
+      #    networks:
+  #      - app_network
 
+
+
+  mongodb:
+    container_name: mongodb3
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-db:/data/db
+      - ./init/mongo/docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - spring
 
   # Mongo Express for all Services
   mongo-express:
@@ -247,13 +261,16 @@ services:
       - ME_CONFIG_MONGODB_URL_booking_db=mongodb://admin:password@booking-db:27017
     container_name: mongo_express_pkg
     depends_on:
-      - approval-db
-      - event-db
-      - booking-db
+      - mongodb
     networks:
       - app_network
 
+volumes:
+  mongo-db:
+    driver: local
 
 networks:
   app_network:
+    driver: bridge
+  spring:
     driver: bridge

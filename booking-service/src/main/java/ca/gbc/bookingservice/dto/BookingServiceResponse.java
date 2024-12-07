@@ -1,33 +1,25 @@
 package ca.gbc.bookingservice.dto;
 
 import java.time.LocalDateTime;
-import ca.gbc.bookingservice.model.BookingModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+import ca.gbc.bookingservice.model.BookingModel;
+import lombok.*;
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class BookingServiceResponse {
 
-	private Long id;
-	private Long userId;
-	private Long roomId;
+	private String id; // MongoDB's ID type
+	private String userId;
+	private String roomId;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private String purpose;
-	private String message;  // This is the field for the message
+	private String message;
 
-	// Constructor for error or status message response
-	public BookingServiceResponse(Long id, String message) {
-		this.id = id;
-		this.message = message;
-	}
-
-	// Optional: Convert BookingModel to BookingServiceResponse
+	// Factory method for convenience
 	public static BookingServiceResponse fromBookingModel(BookingModel bookingModel) {
 		return new BookingServiceResponse(
 				bookingModel.getId(),
@@ -36,9 +28,8 @@ public class BookingServiceResponse {
 				bookingModel.getStartTime(),
 				bookingModel.getEndTime(),
 				bookingModel.getPurpose(),
-				null
+				null // message is optional
 		);
 	}
-
-
 }
+

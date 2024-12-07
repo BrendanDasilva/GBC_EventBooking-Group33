@@ -2,7 +2,7 @@
 # BUILD STAGE
 #---------------
 
-FROM  gradle:8-jdk22-alpine AS builder
+FROM  gradle:8-jdk-21-and-22-alpine AS builder
 
 COPY --chown=gradle:gradle . /home/gradle/src
 
@@ -14,12 +14,15 @@ RUN gradle build -x test
 # PACKAGE STAGE
 #---------------
 
-FROM openjdk:22-jdk-slim
+FROM openjdk:21-jdk-slim
 
 WORKDIR mkdir /app
 
 COPY --from=builder /home/gradle/src/build/libs/*.jar api-gateway.jar
 
+ENV MONGO_DB_USERNAME=admin \
+    MONGO_DB_PWD=password
+
 EXPOSE 9000
 
-ENTRYPOINT ["java", "-jar", "api-gateway.jar"]
+ENTRYPOINT ["java","-jar", "/app/api-gateway.jar"]

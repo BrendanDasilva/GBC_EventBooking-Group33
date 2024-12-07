@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(22)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -29,7 +29,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.flywaydb:flyway-core")
-	implementation("org.flywaydb:flyway-database-postgresql")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
@@ -41,13 +40,18 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+
+
+
+tasks.bootJar {
+	mainClass.set("ca.gbc.userservice.UserServiceApplication")
+}
+
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.bootJar {
-	mainClass.set("ca.gbc.user-service.UserServiceApplication")
-}
+
 //
 //// ----- Disabling bootJar; not runnable Spring Boot Service -----
 //tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
