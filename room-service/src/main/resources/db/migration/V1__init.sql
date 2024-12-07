@@ -1,7 +1,7 @@
--- Create database and grant privileges
-CREATE DATABASE "room-service";
-GRANT ALL PRIVILEGES ON DATABASE "room-service" TO "admin";
-
+-- -- Create database and grant privileges
+-- CREATE DATABASE "room-service";
+-- GRANT ALL PRIVILEGES ON DATABASE "room-service" TO "admin";
+--
 -- Create rooms table
 CREATE TABLE IF NOT EXISTS rooms (
     id SERIAL PRIMARY KEY,
