@@ -10,3 +10,19 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=password
+    networks:
+      - grafana-prometheus-network
+
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    networks:
+      - grafana-prometheus-network
+
+
+networks:
+  grafana-prometheus-network:
+    external: true
