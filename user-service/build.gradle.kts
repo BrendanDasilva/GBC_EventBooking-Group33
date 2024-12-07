@@ -46,7 +46,7 @@ tasks.withType<Test> {
 }
 
 tasks.bootJar {
-	mainClass.set("ca.gbc.user-service.UserServiceApplication")
+	mainClass.set("ca.gbc.userservice.UserServiceApplication")
 }
 //
 //// ----- Disabling bootJar; not runnable Spring Boot Service -----

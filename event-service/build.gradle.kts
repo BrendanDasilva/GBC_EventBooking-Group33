@@ -24,32 +24,44 @@ repositories {
 }
 
 dependencies {
+
+
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("jakarta.persistence:jakarta.persistence-api:3.0.0")
+
+	implementation(project(":room-service"))
+	implementation(project(":booking-service"))
+	implementation(project(":user-service"))
+	implementation(project(":event-service"))
+
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
+
+	testImplementation(project(":user-service"))
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mongodb")
+	testImplementation("org.testcontainers:postgresql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	// No Dependency on JPA
 //	testImplementation(project(":user-service"))
 }
 
-tasks.bootJar{
-	mainClass.set("ca.gbc.event-service.EventServiceApplication")
-}
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.bootJar{
+	mainClass.set("ca.gbc.eventservice.EventServiceApplication")
 }
 
 // ----- Disabling bootJar; not runnable Spring Boot Service -----

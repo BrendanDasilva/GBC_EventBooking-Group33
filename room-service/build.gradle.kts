@@ -29,8 +29,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.flywaydb:flyway-core")
-    implementation("org.flywaydb:flyway-database-postgresql")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
@@ -47,7 +45,7 @@ tasks.withType<Test> {
 }
 
 tasks.bootJar {
-    mainClass.set("ca.gbc.room-service.RoomServiceApplication")
+    mainClass.set("ca.gbc.roomservice.RoomServiceApplication")
 }
 //
 //// ----- Disabling bootJar; not runnable Spring Boot Service -----
