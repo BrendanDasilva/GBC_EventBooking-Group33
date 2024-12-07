@@ -16,9 +16,9 @@ RUN gradle build -x test
 
 FROM openjdk:22-jdk-slim
 
-WORKDIR mkdir /app
+WORKDIR /app
 
-COPY --from=builder /home/gradle/src/build/libs/*.jar api-gateway.jar
+COPY --from=builder /home/gradle/src/build/libs/*.jar /app/api-gateway.jar
 
 EXPOSE 9000
 
