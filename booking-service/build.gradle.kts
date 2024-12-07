@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(22)
 	}
 }
 
@@ -46,6 +46,9 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+tasks.bootJar{
+	mainClass.set("ca.gbc.booking-service.BookingServiceApplication")
+}
 // ----- Disabling bootJar; not runnable Spring Boot Service -----
 //tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
 //	enabled = false

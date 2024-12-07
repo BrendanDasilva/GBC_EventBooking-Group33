@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(22)
 	}
 }
 
@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -40,9 +41,13 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-//tasks.withType<Test> {
-//	useJUnitPlatform()
-//}
+tasks.withType<Test> {
+	useJUnitPlatform()
+}
+
+tasks.bootJar {
+	mainClass.set("ca.gbc.user-service.UserServiceApplication")
+}
 //
 //// ----- Disabling bootJar; not runnable Spring Boot Service -----
 //tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

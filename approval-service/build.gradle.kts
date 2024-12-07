@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(22)
 	}
 }
 
@@ -30,6 +30,7 @@ dependencyManagement{
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -48,6 +49,10 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.bootJar{
+	mainClass.set("ca.gbc.approval-service.ApprovalServiceApplication")
 }
 
 // ----- Disabling bootJar; not runnable Spring Boot Service -----

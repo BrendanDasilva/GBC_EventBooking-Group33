@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(22)
 	}
 }
 
@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-
+	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -44,9 +44,13 @@ dependencies {
 //	testImplementation(project(":user-service"))
 }
 
-//tasks.withType<Test> {
-//	useJUnitPlatform()
-//}
+tasks.bootJar{
+	mainClass.set("ca.gbc.event-service.EventServiceApplication")
+}
+
+tasks.withType<Test> {
+	useJUnitPlatform()
+}
 
 // ----- Disabling bootJar; not runnable Spring Boot Service -----
 //tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

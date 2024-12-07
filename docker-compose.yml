@@ -34,7 +34,7 @@ services:
       - "9000:9000"
     build:
       context: ./api-gateway
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
     environment:
       SPRING_PROFILES_ACTIVE: docker
       #      SPRING_APPLICATION_JSON={"logging":{"level":{"root":"INFO, "ca.gbc.apigateway":"DEBUG}:
@@ -157,8 +157,8 @@ services:
   user-service:
     image: user-service
     build:
-      context: ./user-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: user-service/Dockerfile
     ports:
       - "8090:8090"
     environment:
@@ -173,8 +173,8 @@ services:
   room-service:
     image: room-service
     build:
-      context: ./room-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: room-service/Dockerfile
     ports:
       - "8091:8091"
     environment:
@@ -189,8 +189,8 @@ services:
   event-service:
     image: event-service
     build:
-      context: ./event-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: event-service/Dockerfile
     ports:
       - "8092:8092"
     environment:
@@ -205,8 +205,8 @@ services:
   booking-service:
     image: booking-service
     build:
-      context: ./booking-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: booking-service/Dockerfile
     ports:
       - "8093:8093"
     environment:
@@ -223,8 +223,8 @@ services:
     ports:
       - "8094:8094"
     build:
-      context: ./approval-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: approval-service/Dockerfile
     container_name: approval-service
     environment:
       SPRING_PROFILES_ACTIVE: docker

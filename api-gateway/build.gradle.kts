@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(22)
     }
 }
 
@@ -26,6 +26,7 @@ repositories {
 extra["springCloudVersion"] = "2024.0.0"
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-mvc")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -48,4 +49,8 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.bootJar {
+    mainClass.set("ca.gbc.api-gateway.ApiGatewayApplication")
 }
