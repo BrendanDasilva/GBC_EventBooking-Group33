@@ -51,11 +51,9 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-//tasks.bootJar{
-//	mainClass.set("ca.gbc.approvalservice.ApprovalServiceApplication")
-//}
-
-
+tasks.bootJar{
+	mainClass.set("ca.gbc.approvalservice.ApprovalServiceApplication")
+}
 
 // ----- Disabling bootJar; not runnable Spring Boot Service -----
 //tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

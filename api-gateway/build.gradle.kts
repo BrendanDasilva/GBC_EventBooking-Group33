@@ -23,7 +23,7 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2024.0.0"
+extra["springCloudVersion"] = "2023.0.3"
 
 dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-mvc")
@@ -46,10 +46,8 @@ dependencyManagement {
     }
 }
 
-tasks.bootJar{
-	mainClass.set("ca.gbc.apigateway.ApiGatewayApplication")
-}
 tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+//tasks.register("prepareKotlinBuildScriptModel"){} //Had to add this in order to build successfully, it seems to be an error with later gradle versions

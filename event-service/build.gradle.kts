@@ -44,13 +44,8 @@ dependencies {
 //	testImplementation(project(":user-service"))
 }
 
-//tasks.bootJar{
-//	mainClass.set("ca.gbc.eventservice.EventServiceApplication")
-//}
-
-
-tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
-	enabled = false
+tasks.bootJar{
+	mainClass.set("ca.gbc.eventservice.EventServiceApplication")
 }
 
 tasks.withType<Test> {

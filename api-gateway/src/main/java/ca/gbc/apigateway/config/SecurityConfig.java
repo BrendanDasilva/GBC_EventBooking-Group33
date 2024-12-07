@@ -14,30 +14,35 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     private final String[] noauthResourceUris = {
-        "/swagger-ui",
-        "/swagger-ui/**",
-        "/v3/api-docs/**",
-        "/swagger-resources/**",
-        "/api-docs/**",
-        "/aggregate/**"
+            "/swagger-ui",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resource/**",
+            "/api-docs/**",
+            "/aggregate/**"
     };
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        log.info("Initializing Security Filter Chain. . .");
+        log.info("Initializing Security Filter Chain...");
 
         return httpSecurity
-            .csrf(AbstractHttpConfigurer::disable)          // Disable CSRF protection
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(noauthResourceUris)
-                .permitAll()
-                .anyRequest().authenticated())              // All request require authentication
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(Customizer.withDefaults()))
-            .build();
-
+                .csrf(AbstractHttpConfigurer::disable) //Disable CSRF protection
+                //.authorizeHttpRequests(authorize -> authorize
+                //                        .anyRequest().permitAll())    // skips authentication for DEV purposes, must be removed after dev complete.
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(noauthResourceUris)
+                        .permitAll()
+                        .anyRequest().authenticated())       //All requests require authentication
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(Customizer.withDefaults()))
+                .build();
     }
+
+
 
 }
